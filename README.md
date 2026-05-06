@@ -1,56 +1,62 @@
 # Driver Drowsiness Detection System (OpenCV Only)
 
-This is a real-time student project that detects driver drowsiness using a webcam and OpenCV Haar Cascades.
+Driver Drowsiness Detection System is a lightweight, real-time webcam project that detects drowsiness with OpenCV Haar Cascades. It is intentionally simple and removes `dlib`, facial landmarks, and heavy deep-learning dependencies so it is easy to run, explain, and extend.
 
-The project is fully refactored to remove `dlib`, facial landmarks, and heavy deep-learning dependencies.
+## Highlights
 
-## What This Project Does
+- Face detection with OpenCV Haar Cascades
+- Eye detection inside the detected face region
+- Simple frame-based drowsiness logic
+- Alert sound when the driver appears drowsy
+- On-screen status, counter, bounding boxes, and FPS
 
-- Detects face using OpenCV Haar Cascade
-- Detects eyes inside detected face
-- Uses simple logic:
-  - if eyes are not detected for consecutive frames, treat eyes as closed
-  - if eye-closure counter crosses threshold, mark driver as drowsy
-- Triggers alert sound when drowsiness is detected
-- Shows:
-  - face and eye bounding boxes
-  - system status (`ACTIVE` / `DROWSY`)
-  - eye closure counter
-  - FPS
+## How It Works
 
-## Why This Version Is Better
+1. Capture a webcam frame and convert it to grayscale.
+2. Detect the face region.
+3. Detect eyes inside the face region.
+4. If eyes are missing for several consecutive frames, treat them as closed.
+5. If the closure counter crosses the threshold, show `DROWSY` and trigger the alert.
 
-- Beginner-friendly code structure
-- Easy to explain in interviews
-- Lightweight setup (no model files, no dlib, no TensorFlow)
-- Fast startup and minimal dependencies
+This keeps the project practical for a student demo while avoiding complex landmark pipelines.
 
 ## Project Structure
 
 ```text
-Driver-Drowsiness-Detetction-System-main/
+Driver-Drowsiness-Detection/
+├── main.py
 ├── src/
+│   ├── __init__.py
+│   ├── main.py
 │   ├── detection/
+│   │   ├── __init__.py
 │   │   ├── face_detector.py
 │   │   └── eye_detector.py
-│   ├── utils/
-│   │   ├── alarm.py
-│   │   └── constants.py
-│   └── main.py
-├── main.py
+│   └── utils/
+│       ├── __init__.py
+│       ├── alarm.py
+│       └── constants.py
+├── model_best.h5
 ├── requirements.txt
 └── README.md
 ```
 
+## Requirements
+
+- Python 3.8 or later
+- Webcam access
+- OpenCV installed from `requirements.txt`
+
 ## Setup
 
-1. Clone the repository
-2. Create and activate virtual environment
-3. Install dependencies
+1. Clone the repository.
+2. Create and activate a virtual environment.
+3. Install dependencies.
 
 ```bash
 pip install -r requirements.txt
 ```
+
 ## Run
 
 ```bash
@@ -59,24 +65,22 @@ python main.py
 
 Press `q` to exit the camera window.
 
-## How Drowsiness Is Being  Detected
+## Why This Version Is Better
 
-1. Convert webcam frame to grayscale
-2. Detect face region
-3. Detect eyes inside face region
-4. If eyes are missing for many consecutive frames, increment closure counter
-5. If closure counter exceeds threshold, show `DROWSY` and trigger alert
-
-This avoids complex landmarks and still gives a practical drowsiness warning demo.
+- Beginner-friendly structure
+- Fast startup with minimal dependencies
+- Easy to present in interviews and classroom demos
+- No required model downloads at runtime
 
 ## Optional Note About `model_best.h5`
 
-`model_best.h5` is not required in this OpenCV-only version.
-You can keep it in the repository for reference, but it is not used in runtime.
+`model_best.h5` is kept in the repository for reference only. It is not required for the OpenCV-only runtime path.
 
-## Author
+## Contributors
 
-Harshvardhan Dwivedi
+- Harshwardhan Dwivedi
+- Abhishek Kumar Yadav
+- Rohit Pandey
 
 ## License
 
