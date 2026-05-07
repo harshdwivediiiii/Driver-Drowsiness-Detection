@@ -1,309 +1,336 @@
-# 🚗 Driver Drowsiness Detection System (OpenCV Only)
+<div align="center">
 
-> Real-time AI-based Driver Safety System using Computer Vision & OpenCV
+<h1>🚗 Driver Drowsiness Detection System</h1>
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-green)
-![Status](https://img.shields.io/badge/Project-Active-success)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+<p><strong>Real-time AI-powered driver fatigue monitoring using Computer Vision & OpenCV</strong></p>
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/OpenCV-4.x-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white" />
+  <img src="https://img.shields.io/badge/NumPy-1.24+-013243?style=for-the-badge&logo=numpy&logoColor=white" />
+  <img src="https://img.shields.io/badge/Status-Active-22c55e?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge" />
+</p>
+
+<p>
+  <img src="https://img.shields.io/github/stars/harshdwivediiiii/Driver-Drowsiness-Detection?style=social" />
+  <img src="https://img.shields.io/github/forks/harshdwivediiiii/Driver-Drowsiness-Detection?style=social" />
+</p>
+
+> **"AI for Safer Roads 🛣️"** — A lightweight, webcam-based fatigue detection system that triggers real-time alerts when a driver shows signs of drowsiness.
+
+</div>
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#-overview)
+- [Problem Statement](#-problem-statement)
+- [How It Works](#-how-it-works)
+- [System Architecture](#-system-architecture)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Key Features](#-key-features)
+- [Dataset](#-dataset)
+- [Getting Started](#-getting-started)
+- [Output & Demo](#-output--demo)
+- [Challenges & Learnings](#-challenges--learnings)
+- [Roadmap](#-roadmap)
+- [Contributors](#-contributors)
+- [License](#-license)
 
 ---
 
 ## 📌 Overview
 
-Driver Drowsiness Detection System is a lightweight real-time computer vision project developed using **Python** and **OpenCV** to detect driver fatigue through webcam monitoring.
+Driver fatigue is responsible for **over 20% of road accidents** globally. The **Driver Drowsiness Detection System** is a real-time computer vision solution built with Python and OpenCV that continuously monitors a driver's eye activity through a standard webcam.
 
-The system analyzes the driver's face and eye region continuously. If the eyes remain closed for several consecutive frames, the system identifies the driver as drowsy and triggers an alert alarm.
+When the system detects prolonged eye closure — a primary indicator of drowsiness — it immediately triggers a **visual warning** and **audio alarm** to wake the driver and prevent potential accidents.
 
-This project was designed as a practical AI/ML student project focused on:
-
-* Real-time safety monitoring
-* Computer Vision fundamentals
-* Lightweight implementation without heavy dependencies
-
----
-
-# 🎯 Problem Statement
-
-Driver fatigue is one of the major causes of road accidents worldwide.
-
-### Why This Matters
-
-* Drowsy driving reduces reaction time
-* Fatigue affects judgment and awareness
-* Existing solutions are often expensive
-* Need for affordable and accessible AI safety systems
-
-This project demonstrates how Computer Vision can help improve road safety using only a standard webcam and OpenCV.
+Designed to be:
+- 🪶 **Lightweight** — no dlib, no facial landmark predictors, no heavy ML pipelines
+- ⚡ **Fast** — optimized for real-time performance on standard hardware
+- 🎓 **Beginner-friendly** — clean modular code, perfect for learning CV fundamentals
+- 💸 **Zero-cost** — runs on any webcam, no specialized hardware needed
 
 ---
 
-# 💡 Solution Overview
+## 🎯 Problem Statement
 
-The system performs:
+```
+🚗 Every year, thousands of accidents occur due to driver fatigue.
+💤 Drowsy driving impairs reaction time just as much as alcohol.
+💰 Enterprise-grade safety systems remain inaccessible to most drivers.
+```
 
-* Real-time webcam monitoring
-* Face detection
-* Eye detection
-* Eye closure analysis
-* Drowsiness detection
-* Audio alert triggering
-
-The project is intentionally lightweight and removes:
-
-* ❌ dlib
-* ❌ facial landmark predictors
-* ❌ heavy deep learning pipelines
-
-This makes the system:
-
-* Easier to run
-* Beginner-friendly
-* Faster to deploy
-* Better for demonstrations and presentations
+This project demonstrates that an effective **early-warning fatigue detection system** can be built using only a webcam and open-source libraries — making road safety accessible to everyone.
 
 ---
 
-# 🧠 System Workflow
+## 🧠 How It Works
 
-## Workflow Pipeline
+The system runs a continuous detection pipeline on each webcam frame:
 
-1. Video Capture using Webcam
-2. Frame Preprocessing
-3. Face Detection using Haar Cascades
-4. Eye Detection inside face region
-5. Eye Closure Analysis
-6. Drowsiness Detection
-7. Alert Trigger
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     DETECTION PIPELINE                      │
+├──────────────┬──────────────┬──────────────┬────────────────┤
+│  1. CAPTURE  │  2. PREPROCESS  │  3. DETECT  │  4. ANALYZE  │
+│              │                │             │               │
+│  Webcam      │  Grayscale     │  Haar       │  Eye closure  │
+│  frame grab  │  conversion    │  Cascade    │  frame count  │
+│              │  + resize      │  face & eye │               │
+└──────┬───────┴────────────────┴──────┬──────┴───────┬───────┘
+       │                               │              │
+       └───────────────────────────────┼──────────────┘
+                                       ▼
+                          ┌────────────────────────┐
+                          │  Eyes closed > N frames?│
+                          └────────┬───────┬────────┘
+                                   │ YES   │ NO
+                          ┌────────▼──┐  ┌─▼──────────────┐
+                          │  🔔 ALERT │  │ Continue Normal │
+                          │  Visual + │  │   Monitoring    │
+                          │  Audio    │  └────────────────┘
+                          └───────────┘
+```
+
+### Detection Logic
+
+| State | Eyes Detected | Consecutive Closed Frames | Action |
+|-------|--------------|--------------------------|--------|
+| ✅ Alert | Both eyes open | 0 | No action |
+| ⚠️ Caution | One eye closed | < threshold | Warning overlay |
+| 🚨 Drowsy | Both eyes closed | ≥ threshold | Alarm triggered |
 
 ---
 
-# 🏗️ System Architecture
+## 🏗️ System Architecture
 
-```text
-Webcam Input
-      ↓
-Frame Processing
-      ↓
-Face Detection
-      ↓
-Eye Detection
-      ↓
-Eye Closure Analysis
-      ↓
-Drowsiness Detection
-      ↓
-Alert System
+```
+Driver-Drowsiness-Detection/
+├── src/
+│   ├── detection/
+│   │   ├── face_detector.py     ← Haar Cascade face detection
+│   │   └── eye_detector.py      ← Eye region detection & analysis
+│   │
+│   ├── utils/
+│   │   ├── alarm.py             ← Audio alert system (playsound)
+│   │   └── constants.py         ← Thresholds, config values
+│   │
+│   └── main.py                  ← Pipeline orchestrator
+│
+├── main.py                      ← Entry point
+├── train_model.ipynb            ← Research & model training notebook
+├── model_best.h5                ← Trained model weights
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-# ⚙️ Technologies Used
+## ⚙️ Tech Stack
 
-| Technology    | Purpose                   |
-| ------------- | ------------------------- |
-| Python        | Core programming language |
-| OpenCV        | Real-time computer vision |
-| NumPy         | Numerical operations      |
-| Haar Cascades | Face & eye detection      |
-| Playsound     | Alarm triggering          |
-| GitHub        | Version control           |
+| Technology | Version | Role |
+|---|---|---|
+| **Python** | 3.8+ | Core language |
+| **OpenCV** | 4.x | Real-time video capture & CV |
+| **NumPy** | 1.24+ | Numerical computation |
+| **Haar Cascades** | Built-in | Face & eye detection |
+| **Playsound** | 1.3.0 | Audio alarm playback |
 
----
+### Why OpenCV-only?
 
-# 📂 Project Structure
+Most drowsiness detection tutorials rely on `dlib` + facial landmark predictors, which adds:
+- Heavy install size (~100MB+)
+- C++ compilation requirements
+- Complex setup on Windows
 
-```text
-Driver-Drowsiness-Detection/
-│
-├── .ipynb_checkpoints/
-│
-├── src/
-│   │
-│   ├── .ipynb_checkpoints/
-│   │
-│   ├── __pycache__/
-│   │   ├── __init__.cpython-312.pyc
-│   │   └── main.cpython-312.pyc
-│   │
-│   ├── detection/
-│   │   │
-│   │   ├── __pycache__/
-│   │   ├── __init__.py
-│   │   ├── eye_detector.py
-│   │   └── face_detector.py
-│   │
-│   ├── models/
-│   │   │
-│   │   ├── __pycache__/
-│   │   └── __init__.py
-│   │
-│   ├── utils/
-│   │   │
-│   │   ├── __pycache__/
-│   │   ├── __init__.py
-│   │   ├── alarm.py
-│   │   └── constants.py
-│   │
-│   ├── __init__.py
-│   └── main.py
-│
-├── LICENSE
-├── README.md
-├── iphone-alarm-vs-android-alarm-128-ytshorts.savetube.me.mp3
-├── main.py
-├── model_best.h5
-├── requirements.txt
-└── train_model.ipynb
-# ✨ Key Features
-
-✅ Real-time webcam monitoring
-✅ Face detection using Haar Cascades
-✅ Eye tracking system
-✅ Drowsiness alert system
-✅ FPS display
-✅ Lightweight architecture
-✅ Beginner-friendly modular code structure
+This project achieves the same goal with **zero heavy dependencies** — just `pip install` and run.
 
 ---
 
-# 📊 Dataset Used
+## ✨ Key Features
 
-### Kaggle Drowsiness Dataset
-
-Dataset Source:
-
-https://www.kaggle.com/datasets/dheerajperumandla/drowsiness-dataset
-
-Dataset includes:
-
-* Open eye images
-* Closed eye images
-* Drowsy state samples
-
-The dataset was used for understanding driver fatigue behavior and project research.
+| Feature | Description |
+|---|---|
+| 🎥 **Real-time Monitoring** | Processes live webcam feed at target FPS |
+| 👁️ **Eye Tracking** | Detects open/closed state per frame using Haar Cascades |
+| 😴 **Drowsiness Detection** | Triggers alert after sustained eye closure beyond threshold |
+| 🔔 **Dual Alert System** | On-screen warning overlay + audio alarm |
+| 📊 **FPS Display** | Live performance counter on-screen |
+| 🧩 **Modular Codebase** | Clean separation of detection, utils, and main logic |
+| 🪶 **Lightweight** | No dlib, no heavy ML inference at runtime |
+| 🖥️ **Cross-platform** | Works on Windows, macOS, Linux |
 
 ---
 
-# 🚀 Installation
+## 📊 Dataset
 
-## 1️⃣ Clone Repository
+**[Kaggle Drowsiness Dataset](https://www.kaggle.com/datasets/dheerajperumandla/drowsiness-dataset)** by Dheeraj Perumandla
+
+```
+Dataset/
+├── Open_Eyes/    ← Alert state images
+├── Closed_Eyes/  ← Drowsy state images
+└── Yawn/         ← Additional fatigue indicators
+```
+
+Used for: research, threshold calibration, and model training in `train_model.ipynb`. The Haar Cascade approach in `main.py` runs inference-free — no dataset required at runtime.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.8 or higher
+- A working webcam
+- `pip` package manager
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/harshdwivediiiii/Driver-Drowsiness-Detection.git
 cd Driver-Drowsiness-Detection
 ```
 
----
+### 2. Create & Activate Virtual Environment
 
-## 2️⃣ Create Virtual Environment
-
-### Windows
-
+**Windows:**
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
----
+**macOS / Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
-## 3️⃣ Install Dependencies
+### 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-# ▶️ Run Project
+### 4. Run the System
 
 ```bash
 python main.py
 ```
 
-Press `q` to exit the webcam window.
+> Press **`Q`** to quit the webcam window.
 
 ---
 
-# 🖥️ Output
+### ⚠️ Troubleshooting
 
-The system displays:
-
-* Face detection bounding boxes
-* Eye detection rectangles
-* Drowsiness status
-* FPS counter
-* Alert warning overlay
-
-When drowsiness is detected:
-
-* Screen warning appears
-* Alarm sound is triggered
+| Issue | Fix |
+|---|---|
+| Webcam not opening | Check that no other app is using the camera |
+| `playsound` error on Linux | Install `gstreamer`: `sudo apt install python3-gst-1.0` |
+| Low FPS | Reduce frame resolution in `constants.py` |
+| Too many false positives | Increase `EYE_CLOSED_THRESHOLD` in `constants.py` |
 
 ---
 
-# ⚠️ Challenges Faced
+## 🖥️ Output & Demo
 
-* Lighting condition variations
-* False positives during blinking
-* Webcam quality limitations
-* Real-time performance optimization
+When running, the system renders:
 
-These challenges helped improve understanding of:
+```
+┌─────────────────────────────────────────┐
+│  [LIVE WEBCAM FEED]                     │
+│                                         │
+│  ┌──────────────┐   FPS: 28             │
+│  │  Face bbox   │   Status: ALERT ✅    │
+│  │  ┌──┐  ┌──┐  │                      │
+│  │  │L │  │R │  │   Eyes: OPEN          │
+│  │  └──┘  └──┘  │                      │
+│  └──────────────┘                       │
+│                                         │
+│  ⚠️  DROWSINESS DETECTED — WAKE UP!    │  ← triggers when drowsy
+└─────────────────────────────────────────┘
+```
 
-* Image preprocessing
-* Real-time CV systems
-* Detection threshold tuning
+On drowsiness detection:
+- 🔴 Red warning banner overlaid on frame
+- 🔔 Alarm sound plays immediately
+- System resets counter once eyes reopen
 
 ---
 
-# 🔮 Future Improvements
+## ⚠️ Challenges & Learnings
 
-* Deep learning-based detection
-* Head pose estimation
-* Mobile application integration
-* Cloud monitoring dashboard
-* Personalized fatigue scoring
-* Smart vehicle integration
+| Challenge | What We Learned |
+|---|---|
+| Lighting variations | Adaptive histogram equalization (CLAHE) for preprocessing |
+| False positives on blinks | Threshold tuning — `N` consecutive frames vs single-frame detection |
+| Webcam quality variance | Importance of resolution normalization before detection |
+| Real-time performance | Frame skipping + ROI cropping to maintain target FPS |
+
+These real-world constraints deepened understanding of production CV system design beyond textbook examples.
 
 ---
 
-# 👨‍💻 Contributors
+## 🔮 Roadmap
 
-* Harshvardhan Dwivedi
-* Abhishek Kumar Yadav
-* Rohit Pandey
+- [ ] **Deep Learning upgrade** — Replace Haar Cascades with MobileNet/EfficientNet eye classifier
+- [ ] **EAR (Eye Aspect Ratio)** — More robust closure metric using MediaPipe Face Mesh
+- [ ] **Head Pose Estimation** — Detect nodding/head drooping
+- [ ] **Yawn Detection** — Additional fatigue indicator
+- [ ] **Mobile App** — Android/iOS deployment via TFLite
+- [ ] **Cloud Dashboard** — Fleet monitoring for commercial transport
+- [ ] **Personalized Baselines** — Adaptive thresholds per driver profile
+- [ ] **Smart Vehicle Integration** — CAN bus interface for embedded deployment
 
-Department of CSE – AI / AIML
+---
+
+## 👨‍💻 Contributors
+
+<table>
+  <tr>
+    <td align="center">
+      <strong>Harshvardhan Dwivedi</strong><br/>
+      <a href="https://github.com/harshdwivediiiii">@harshdwivediiiii</a>
+    </td>
+    <td align="center">
+      <strong>Abhishek Kumar Yadav</strong><br/>
+      CV Research & Integration
+    </td>
+    <td align="center">
+      <strong>Rohit Pandey</strong><br/>
+      Testing & Documentation
+    </td>
+  </tr>
+</table>
+
+**Department of CSE – AI/ML**
 Rungta College of Engineering and Technology, Bhilai (CG)
 
 ---
 
-# 📄 License
+## 📄 License
 
-This project is licensed under the MIT License.
-
----
-
-# 🙏 Acknowledgement
-
-Special thanks to:
-
-* OpenCV Community
-* Kaggle Dataset Contributors
-* NotebookLM & Claude AI for research support
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-# ⭐ Conclusion
+## 🙏 Acknowledgements
 
-This project demonstrates how AI and Computer Vision can be applied to real-world safety systems.
+- [OpenCV Community](https://opencv.org/) — for the incredible open-source CV library
+- [Dheeraj Perumandla](https://www.kaggle.com/datasets/dheerajperumandla/drowsiness-dataset) — for the Kaggle drowsiness dataset
+- Kaggle community — for notebooks and research references
 
-The Driver Drowsiness Detection System provides:
+---
 
-* affordable monitoring
-* real-time detection
-* lightweight implementation
-* practical AI/ML learning experience
+<div align="center">
 
-> “AI for Safer Roads 🚘”
+**If this project helped you, drop a ⭐ — it keeps the momentum going!**
+
+*Built with ❤️ for road safety and open-source learning*
+
+</div>
