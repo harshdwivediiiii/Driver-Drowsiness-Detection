@@ -1,4 +1,4 @@
-"""OpenCV Haar Cascade based face detection helpers."""
+"""OpenCV Haar Cascade ML Model based face detection helpers."""
 
 from typing import List, Tuple
 
